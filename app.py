@@ -73,7 +73,7 @@ class VideoAudioMergerApp(ctk.CTk):
             self.check_ready()
 
     def select_image(self):
-        path = filedialog.askopenfilename(filetypes=[("Image Files", "*.jpg;*.jpeg;*.png;*.bmp")])
+        path = filedialog.askopenfilename(filetypes=[("Image Files", "*.jpg;*.jpeg;*.png;*.bmp;*.webp")])
         if path:
             self.image_path = path
             self.status_var.set(f"Bilde valgt: {os.path.basename(path)} (kun thumbnail)")
@@ -81,7 +81,7 @@ class VideoAudioMergerApp(ctk.CTk):
             try:
                 img = Image.open(path)
                 img.thumbnail((60, 60))
-                self.image_thumbnail = ImageTk.PhotoImage(img)
+                self.image_thumbnail = ctk.CTkImage(light_image=img, dark_image=img, size=(60, 60))
                 self.thumbnail_label.configure(image=self.image_thumbnail, text="")
                 self.thumbnail_label.image = self.image_thumbnail
             except Exception as e:
@@ -122,14 +122,27 @@ class VideoAudioMergerApp(ctk.CTk):
                 # Legg til thumbnail hvis valgt
                 if self.image_path:
                     ext = os.path.splitext(self.image_path)[1].lower()
-                    if ext not in [".jpg", ".jpeg", ".png"]:
-                        self.status_var.set("Video eksportert, men thumbnail må være JPG eller PNG.")
+                    thumb_image_path = self.image_path
+                    temp_jpg = None
+                    if ext == ".webp":
+                        # Konverter webp til jpg midlertidig
+                        try:
+                            img = Image.open(self.image_path).convert("RGB")
+                            temp_jpg = self.image_path + ".temp.jpg"
+                            img.save(temp_jpg, "JPEG")
+                            thumb_image_path = temp_jpg
+                        except Exception as e:
+                            self.status_var.set(f"Kunne ikke konvertere WEBP: {e}")
+                            os.rename(temp_output, output_path)
+                            return
+                    if ext not in [".jpg", ".jpeg", ".png", ".webp"]:
+                        self.status_var.set("Video eksportert, men thumbnail må være JPG, PNG eller WEBP.")
                         os.rename(temp_output, output_path)
                     else:
                         thumb_cmd = [
                             "ffmpeg", "-y",
                             "-i", temp_output,
-                            "-i", self.image_path,
+                            "-i", thumb_image_path,
                             "-map", "0",
                             "-map", "1",
                             "-c", "copy",
@@ -143,6 +156,11 @@ class VideoAudioMergerApp(ctk.CTk):
                             os.remove(temp_output)
                         except Exception:
                             pass
+                        if temp_jpg:
+                            try:
+                                os.remove(temp_jpg)
+                            except Exception:
+                                pass
                         if thumb_result.returncode == 0:
                             self.status_var.set(f"Ferdig: {os.path.basename(output_path)} eksportert med thumbnail.")
                         else:
