@@ -8,37 +8,58 @@ class VideoAudioMergerApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Video + Audio Merger")
+        self.root.geometry("400x420")
+        self.root.resizable(False, False)
         self.video_path = None
         self.audio_path = None
-
-        tk.Label(root, text="Velg video:").pack(pady=5)
-        self.video_btn = tk.Button(root, text="Velg video", command=self.select_video)
-        self.video_btn.pack(pady=5)
-
-        tk.Label(root, text="Velg lyd:").pack(pady=5)
-        self.audio_btn = tk.Button(root, text="Velg lyd", command=self.select_audio)
-        self.audio_btn.pack(pady=5)
-
-        self.merge_btn = tk.Button(root, text="Slå sammen og eksporter", command=self.merge, state=tk.DISABLED)
-        self.merge_btn.pack(pady=20)
-
         self.image_path = None
         self.image_thumbnail = None
+
+        main_frame = tk.Frame(root, padx=16, pady=16)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Video Section
+        video_frame = tk.LabelFrame(main_frame, text="1. Velg videofil", padx=10, pady=10)
+        video_frame.pack(fill=tk.X, pady=(0, 10))
+        self.video_btn = tk.Button(video_frame, text="Velg video", command=self.select_video, width=20)
+        self.video_btn.pack(side=tk.LEFT)
+        self.video_label = tk.Label(video_frame, text="Ingen valgt", anchor=tk.W)
+        self.video_label.pack(side=tk.LEFT, padx=10)
+
+        # Audio Section
+        audio_frame = tk.LabelFrame(main_frame, text="2. Velg lydfil", padx=10, pady=10)
+        audio_frame.pack(fill=tk.X, pady=(0, 10))
+        self.audio_btn = tk.Button(audio_frame, text="Velg lyd", command=self.select_audio, width=20)
+        self.audio_btn.pack(side=tk.LEFT)
+        self.audio_label = tk.Label(audio_frame, text="Ingen valgt", anchor=tk.W)
+        self.audio_label.pack(side=tk.LEFT, padx=10)
+
+        # Thumbnail Section
+        thumb_frame = tk.LabelFrame(main_frame, text="3. (Valgfritt) Velg bilde for thumbnail", padx=10, pady=10)
+        thumb_frame.pack(fill=tk.X, pady=(0, 10))
+        self.image_btn = tk.Button(thumb_frame, text="Velg bilde", command=self.select_image, width=20)
+        self.image_btn.pack(side=tk.LEFT)
+        self.thumb_info = tk.Label(thumb_frame, text="Ingen valgt", anchor=tk.W)
+        self.thumb_info.pack(side=tk.LEFT, padx=10)
+        self.thumbnail_label = tk.Label(thumb_frame)
+        self.thumbnail_label.pack(side=tk.LEFT, padx=10)
+
+        # Merge Button
+        self.merge_btn = tk.Button(main_frame, text="Slå sammen og eksporter", command=self.merge, state=tk.DISABLED, font=("Segoe UI", 12, "bold"), bg="#4CAF50", fg="white")
+        self.merge_btn.pack(pady=16, fill=tk.X)
+
+        # Status Bar
         self.status_var = tk.StringVar()
         self.status_var.set("Velg video og lyd.")
-        self.status_bar = tk.Label(root, textvariable=self.status_var, bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        self.status_bar = tk.Label(root, textvariable=self.status_var, bd=1, relief=tk.SUNKEN, anchor=tk.W, font=("Segoe UI", 10))
         self.status_bar.pack(fill=tk.X, side=tk.BOTTOM)
-
-        self.image_btn = tk.Button(root, text="(Valgfritt) Velg bilde (thumbnail)", command=self.select_image)
-        self.image_btn.pack(pady=5)
-        self.thumbnail_label = tk.Label(root)
-        self.thumbnail_label.pack(pady=5)
 
     def select_video(self):
         path = filedialog.askopenfilename(filetypes=[("Video Files", "*.mp4;*.mov;*.avi;*.mkv")])
         if path:
             self.video_path = path
             self.status_var.set(f"Video valgt: {os.path.basename(path)}")
+            self.video_label.config(text=os.path.basename(path))
             self.check_ready()
 
     def select_audio(self):
@@ -46,6 +67,7 @@ class VideoAudioMergerApp:
         if path:
             self.audio_path = path
             self.status_var.set(f"Lyd valgt: {os.path.basename(path)}")
+            self.audio_label.config(text=os.path.basename(path))
             self.check_ready()
 
     def select_image(self):
@@ -53,14 +75,18 @@ class VideoAudioMergerApp:
         if path:
             self.image_path = path
             self.status_var.set(f"Bilde valgt: {os.path.basename(path)} (kun thumbnail)")
+            self.thumb_info.config(text=os.path.basename(path))
             try:
                 img = Image.open(path)
-                img.thumbnail((120, 120))
+                img.thumbnail((60, 60))
                 self.image_thumbnail = ImageTk.PhotoImage(img)
                 self.thumbnail_label.config(image=self.image_thumbnail, text="")
                 self.thumbnail_label.image = self.image_thumbnail  # Prevent garbage collection
             except Exception as e:
                 self.thumbnail_label.config(image="", text=f"(Forhåndsvisning feilet: {e})")
+        else:
+            self.thumb_info.config(text="Ingen valgt")
+            self.thumbnail_label.config(image="", text="")
 
     def check_ready(self):
         if self.video_path and self.audio_path:
