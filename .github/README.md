@@ -1,30 +1,27 @@
 # Inspire Studio
 
-Inspire Studio er en moderne, brukervennlig app for Windows som lar deg:
+Inspire Studio is a modern, user-friendly app for Windows that lets you:
 
-- **Slå sammen video og lyd**: Velg en videofil og en lydfil, og eksporter en ny video med ønsket lyd.
-- **Last ned fra YouTube**: Lim inn en YouTube-lenke eller spilleliste, og last ned videoer med automatisk thumbnail.
+- **Merge video and audio**: Select a video file and an audio file, and export a new video with your chosen audio.
+- **Download from YouTube**: Paste a YouTube link or playlist and download videos with automatic thumbnails.
 
-Appen har et moderne grensesnitt bygget med Python, customtkinter og ffmpeg.
+The app features a modern interface built with Python, customtkinter, and ffmpeg.
 
-## Funksjoner
-- Velg og slå sammen video (MP4, MOV, AVI, MKV) og lyd (MP3, WAV, AAC, OGG)
-- Legg til egendefinert thumbnail på eksportert video
-- Last ned enkeltvideoer eller hele spillelister fra YouTube
-- Automatisk innbygging av cover-bilde (thumbnail) på alle nedlastede videoer
-- Moderne, fargetema-basert UI
+## Features
+- Select and merge video (MP4, MOV, AVI, MKV) and audio (MP3, WAV, AAC, OGG)
+- Add a custom thumbnail to exported videos
+- Download single videos or entire playlists from YouTube
+- Automatic embedding of cover images (thumbnails) on all downloaded videos
+- Modern, theme-based UI
 
-## Krav
-- Python 3.8 eller nyere
-- ffmpeg (må være installert og i PATH)
+## Requirements
+- Python 3.8 or newer
+- ffmpeg (must be installed and in PATH)
 - customtkinter (`pip install customtkinter`)
 - yt-dlp (`pip install yt-dlp`)
 
-## Slik bruker du Inspire Studio
-1. Kjør appen: `python main.py`
-2. Velg "Video + Audio" for å slå sammen video og lyd, eller "YouTube" for å laste ned videoer
-3. Følg instruksjonene i appen
-4. Ferdig!
-
----
-Dette er et hobbyprosjekt. For produksjon, legg til mer feilhåndtering og støtte for flere formater etter behov.
+## How to use Inspire Studio
+1. Run the app: `python main.py`
+2. Choose "Video + Audio" to merge video and audio, or "YouTube" to download videos
+3. Follow the instructions in the app
+4. Done!
