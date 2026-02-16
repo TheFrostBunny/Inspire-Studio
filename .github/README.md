@@ -15,6 +15,18 @@ The app features a modern interface built with Python, customtkinter, and ffmpeg
 - Modern, theme-based UI
 
 ## Requirements
+
+### On macOS
+- Install ffmpeg using Homebrew: `brew install ffmpeg`
+- Make sure Python 3.8+ is installed: `python3 --version`
+- Install Python dependencies: `pip3 install customtkinter yt-dlp`
+
+
+### On Windows
+- Download and install [ffmpeg for Windows](https://ffmpeg.org/download.html) and add it to your PATH, or place ffmpeg.exe in your project folder.
+- Make sure Python 3.8+ is installed: `python --version`
+- Install Python dependencies: `pip install customtkinter yt-dlp`
+
 - On Linux:
 	- Install ffmpeg with your package manager, e.g. `sudo apt install ffmpeg` (Debian/Ubuntu) or `sudo dnf install ffmpeg` (Fedora)
 	- Make sure Python 3.8+ is installed: `python3 --version`
@@ -26,6 +38,12 @@ The app features a modern interface built with Python, customtkinter, and ffmpeg
 - yt-dlp (`pip install yt-dlp`)
 
 ## How to use Inspire Studio
+### On macOS
+1. Run the app: `python3 main.py`
+2. Use the app as described above. All features work on macOS, but the system tray icon may not be available on all desktop environments.
+### On Windows
+1. Run the app: `python main.py`
+2. Use the app as described above. All features work on Windows, including the system tray icon.
 ### On Linux
 1. Run the app: `python3 main.py`
 2. Use the app as described above. All features work on Linux, but the system tray icon may not be available on all desktop environments.
