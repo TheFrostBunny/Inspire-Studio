@@ -15,41 +15,66 @@ class VideoAudioMergerApp(ctk.CTkFrame):
         self.image_thumbnail = None
         self.progress_var = ctk.DoubleVar(value=0)
 
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(6, weight=1)
+        # Hovedramme for padding og bakgrunn
+        self.bg_frame = ctk.CTkFrame(self, fg_color="#23272e")
+        self.bg_frame.grid(row=0, column=0, sticky="nsew", padx=16, pady=16)
+        self.bg_frame.grid_columnconfigure(0, weight=1)
 
-        self.video_label = ctk.CTkLabel(self, text="1. Velg videofil", anchor="w")
-        self.video_label.grid(row=0, column=0, sticky="w", padx=24, pady=(24, 0))
-        self.video_btn = ctk.CTkButton(self, text="Velg video", command=self.select_video)
-        self.video_btn.grid(row=1, column=0, sticky="ew", padx=24, pady=4)
-        self.video_file_label = ctk.CTkLabel(self, text="Ingen valgt", anchor="w")
-        self.video_file_label.grid(row=2, column=0, sticky="w", padx=24, pady=(0, 12))
+        # Tittel med større font og ikon
+        self.title_label = ctk.CTkLabel(self.bg_frame, text="🎬 Video + Audio Merger", anchor="w", font=ctk.CTkFont(size=20, weight="bold"), text_color="#FFD600")
+        self.title_label.grid(row=0, column=0, sticky="w", padx=8, pady=(8, 0))
 
-        self.audio_label = ctk.CTkLabel(self, text="2. Velg lydfil", anchor="w")
-        self.audio_label.grid(row=3, column=0, sticky="w", padx=24, pady=(0, 0))
-        self.audio_btn = ctk.CTkButton(self, text="Velg lyd", command=self.select_audio)
-        self.audio_btn.grid(row=4, column=0, sticky="ew", padx=24, pady=4)
-        self.audio_file_label = ctk.CTkLabel(self, text="Ingen valgt", anchor="w")
-        self.audio_file_label.grid(row=5, column=0, sticky="w", padx=24, pady=(0, 12))
+        # Videoinput
+        self.video_frame = ctk.CTkFrame(self.bg_frame, fg_color="#2c313a")
+        self.video_frame.grid(row=1, column=0, sticky="ew", padx=0, pady=(12, 8))
+        self.video_frame.grid_columnconfigure(1, weight=1)
+        self.video_icon = ctk.CTkLabel(self.video_frame, text="📹", font=ctk.CTkFont(size=16))
+        self.video_icon.grid(row=0, column=0, padx=(12, 4), pady=10)
+        self.video_label = ctk.CTkLabel(self.video_frame, text="Videofil", anchor="w", font=ctk.CTkFont(size=14))
+        self.video_label.grid(row=0, column=1, sticky="w", padx=(0, 8), pady=10)
+        self.video_btn = ctk.CTkButton(self.video_frame, text="Velg video", command=self.select_video, height=32)
+        self.video_btn.grid(row=0, column=2, padx=(0, 12), pady=10)
+        self.video_file_label = ctk.CTkLabel(self.video_frame, text="Ingen valgt", anchor="w", font=ctk.CTkFont(size=12), text_color="#B0BEC5")
+        self.video_file_label.grid(row=1, column=1, columnspan=2, sticky="w", padx=(0, 12), pady=(0, 8))
 
-        self.thumb_label = ctk.CTkLabel(self, text="3. (Valgfritt) Velg bilde for thumbnail", anchor="w")
-        self.thumb_label.grid(row=6, column=0, sticky="w", padx=24, pady=(0, 0))
-        self.image_btn = ctk.CTkButton(self, text="Velg bilde", command=self.select_image)
-        self.image_btn.grid(row=7, column=0, sticky="ew", padx=24, pady=4)
-        self.thumb_file_label = ctk.CTkLabel(self, text="Ingen valgt", anchor="w")
-        self.thumb_file_label.grid(row=8, column=0, sticky="w", padx=24, pady=(0, 0))
-        self.thumbnail_label = ctk.CTkLabel(self, text="")
-        self.thumbnail_label.grid(row=9, column=0, sticky="w", padx=24, pady=(0, 12))
+        # Lydinput
+        self.audio_frame = ctk.CTkFrame(self.bg_frame, fg_color="#2c313a")
+        self.audio_frame.grid(row=2, column=0, sticky="ew", padx=0, pady=(0, 8))
+        self.audio_frame.grid_columnconfigure(1, weight=1)
+        self.audio_icon = ctk.CTkLabel(self.audio_frame, text="🎵", font=ctk.CTkFont(size=16))
+        self.audio_icon.grid(row=0, column=0, padx=(12, 4), pady=10)
+        self.audio_label = ctk.CTkLabel(self.audio_frame, text="Lydfil", anchor="w", font=ctk.CTkFont(size=14))
+        self.audio_label.grid(row=0, column=1, sticky="w", padx=(0, 8), pady=10)
+        self.audio_btn = ctk.CTkButton(self.audio_frame, text="Velg lyd", command=self.select_audio, height=32)
+        self.audio_btn.grid(row=0, column=2, padx=(0, 12), pady=10)
+        self.audio_file_label = ctk.CTkLabel(self.audio_frame, text="Ingen valgt", anchor="w", font=ctk.CTkFont(size=12), text_color="#B0BEC5")
+        self.audio_file_label.grid(row=1, column=1, columnspan=2, sticky="w", padx=(0, 12), pady=(0, 8))
 
-        self.merge_btn = ctk.CTkButton(self, text="Slå sammen og eksporter", command=self.merge, fg_color="#4CAF50", text_color="white", font=ctk.CTkFont(size=16, weight="bold"))
-        self.merge_btn.grid(row=10, column=0, sticky="ew", padx=24, pady=16)
+        # Thumbnail input
+        self.thumb_frame = ctk.CTkFrame(self.bg_frame, fg_color="#2c313a")
+        self.thumb_frame.grid(row=3, column=0, sticky="ew", padx=0, pady=(0, 8))
+        self.thumb_frame.grid_columnconfigure(1, weight=1)
+        self.thumb_icon = ctk.CTkLabel(self.thumb_frame, text="🖼️", font=ctk.CTkFont(size=16))
+        self.thumb_icon.grid(row=0, column=0, padx=(12, 4), pady=10)
+        self.thumb_label = ctk.CTkLabel(self.thumb_frame, text="(Valgfritt) Bilde for thumbnail", anchor="w", font=ctk.CTkFont(size=14))
+        self.thumb_label.grid(row=0, column=1, sticky="w", padx=(0, 8), pady=10)
+        self.image_btn = ctk.CTkButton(self.thumb_frame, text="Velg bilde", command=self.select_image, height=32)
+        self.image_btn.grid(row=0, column=2, padx=(0, 12), pady=10)
+        self.thumb_file_label = ctk.CTkLabel(self.thumb_frame, text="Ingen valgt", anchor="w", font=ctk.CTkFont(size=12), text_color="#B0BEC5")
+        self.thumb_file_label.grid(row=1, column=1, sticky="w", padx=(0, 12), pady=(0, 8))
+        self.thumbnail_label = ctk.CTkLabel(self.thumb_frame, text="")
+        self.thumbnail_label.grid(row=1, column=2, sticky="e", padx=(0, 12), pady=(0, 8))
 
+        # Slå sammen knapp
+        self.merge_btn = ctk.CTkButton(self.bg_frame, text="🔀 Slå sammen og eksporter", command=self.merge, fg_color="#4CAF50", text_color="white", font=ctk.CTkFont(size=16, weight="bold"), height=38)
+        self.merge_btn.grid(row=4, column=0, sticky="ew", padx=0, pady=16)
+
+        # Status og progresjon
         self.status_var = ctk.StringVar(value="Velg video og lyd.")
-        self.status_bar = ctk.CTkLabel(self, textvariable=self.status_var, anchor="w", height=28)
-        self.status_bar.grid(row=11, column=0, sticky="ew", padx=0, pady=(0, 0))
-
-        self.progress_bar = ctk.CTkProgressBar(self, variable=self.progress_var, width=420, height=16)
-        self.progress_bar.grid(row=12, column=0, padx=24, pady=(0, 16))
+        self.status_bar = ctk.CTkLabel(self.bg_frame, textvariable=self.status_var, anchor="w", height=28, font=ctk.CTkFont(size=13), text_color="#B0BEC5")
+        self.status_bar.grid(row=5, column=0, sticky="ew", padx=0, pady=(0, 0))
+        self.progress_bar = ctk.CTkProgressBar(self.bg_frame, variable=self.progress_var, width=420, height=18, progress_color="#FFD600")
+        self.progress_bar.grid(row=6, column=0, padx=0, pady=(8, 8))
         self.progress_bar.set(0)
 
     def select_video(self):
