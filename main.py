@@ -29,16 +29,11 @@ class MainApp(ctk.CTk):
         y = (hs // 2) - (h // 2)
         self.geometry(f"{w}x{h}+{x}+{y}")
 
-        # App-ikon (kun hvis PIL er tilgjengelig)
-        if Image:
-            icon_img = Image.new("RGB", (64, 64), (58, 140, 255))
-            try:
-                import tempfile
-                icon_path = tempfile.mktemp(suffix=".ico")
-                icon_img.save(icon_path)
-                self.iconbitmap(icon_path)
-            except Exception:
-                pass
+        # App-ikon (logo.ico)
+        try:
+            self.iconbitmap("logo.ico")
+        except Exception:
+            pass
 
         # Toppmeny med moderne stil og ikoner
         self.menu_frame = ctk.CTkFrame(self, height=60, fg_color=Theme.color_theme.MENU_COLOR, corner_radius=12)
@@ -86,7 +81,10 @@ class MainApp(ctk.CTk):
     def minimize_to_tray(self):
         self.withdraw()
         if pystray and Image:
-            icon_img = Image.new("RGB", (64, 64), (58, 140, 255))
+            try:
+                icon_img = Image.open("logo.ico")
+            except Exception:
+                icon_img = Image.new("RGB", (64, 64), (58, 140, 255))
             menu = pystray.Menu(
                 pystray.MenuItem("Vis Inspire Studio", self.restore_window),
                 pystray.MenuItem("Avslutt Inspire Studio", self.exit_app)
