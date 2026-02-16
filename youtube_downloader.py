@@ -3,6 +3,7 @@ from tkinter import filedialog, messagebox
 import subprocess
 import os
 import threading
+import Theme.color_theme
 
 class YouTubeDownloaderApp(ctk.CTkFrame):
     def __init__(self, master):
@@ -11,33 +12,33 @@ class YouTubeDownloaderApp(ctk.CTkFrame):
         self.progress_var = ctk.DoubleVar(value=0)
 
         # Hovedramme for padding og bakgrunn
-        self.bg_frame = ctk.CTkFrame(self, fg_color="#23272e")
-        self.bg_frame.grid(row=0, column=0, sticky="nsew", padx=16, pady=16)
+        self.bg_frame = ctk.CTkFrame(self, fg_color=Theme.color_theme.MENU_COLOR, corner_radius=18)
+        self.bg_frame.grid(row=0, column=0, sticky="nsew", padx=24, pady=24)
         self.bg_frame.grid_columnconfigure(0, weight=1)
 
         # Tittel med større font og ikon
-        self.yt_label = ctk.CTkLabel(self.bg_frame, text="⬇️  YouTube-nedlaster", anchor="w", font=ctk.CTkFont(size=20, weight="bold"), text_color="#FFD600")
-        self.yt_label.grid(row=0, column=0, sticky="w", padx=8, pady=(8, 0))
+        self.yt_label = ctk.CTkLabel(self.bg_frame, text="📥 YouTube Video Henter", anchor="w", font=ctk.CTkFont(size=22, weight="bold"), text_color=Theme.color_theme.BTN_GREEN)
+        self.yt_label.grid(row=0, column=0, sticky="w", padx=12, pady=(12, 0))
 
         # Inndeling for lenkeinput
-        self.link_frame = ctk.CTkFrame(self.bg_frame, fg_color="#2c313a")
-        self.link_frame.grid(row=1, column=0, sticky="ew", padx=0, pady=(12, 8))
+        self.link_frame = ctk.CTkFrame(self.bg_frame, fg_color=Theme.color_theme.CONTENT_BG, corner_radius=14)
+        self.link_frame.grid(row=1, column=0, sticky="ew", padx=0, pady=(16, 10))
         self.link_frame.grid_columnconfigure(1, weight=1)
-        self.link_icon = ctk.CTkLabel(self.link_frame, text="🔗", font=ctk.CTkFont(size=16))
-        self.link_icon.grid(row=0, column=0, padx=(12, 4), pady=10)
-        self.yt_entry = ctk.CTkEntry(self.link_frame, placeholder_text="Lim inn YouTube-lenke eller spilleliste", height=36, font=ctk.CTkFont(size=14))
-        self.yt_entry.grid(row=0, column=1, sticky="ew", padx=(0, 12), pady=10)
+        self.link_icon = ctk.CTkLabel(self.link_frame, text="🔗", font=ctk.CTkFont(size=18))
+        self.link_icon.grid(row=0, column=0, padx=(12, 4), pady=12)
+        self.yt_entry = ctk.CTkEntry(self.link_frame, placeholder_text="Lim inn YouTube-lenke eller spilleliste", height=40, font=ctk.CTkFont(size=15))
+        self.yt_entry.grid(row=0, column=1, sticky="ew", padx=(0, 12), pady=12)
 
         # Nedlastingsknapp med farge og ikon
-        self.yt_btn = ctk.CTkButton(self.bg_frame, text="⬇️  Last ned", command=self.download_youtube, fg_color="#4CAF50", text_color="white", font=ctk.CTkFont(size=16, weight="bold"), height=38)
-        self.yt_btn.grid(row=2, column=0, sticky="ew", padx=0, pady=(0, 16))
+        self.yt_btn = ctk.CTkButton(self.bg_frame, text="⬇️  Last ned", command=self.download_youtube, fg_color=Theme.color_theme.BTN_GREEN, text_color="white", font=ctk.CTkFont(size=17, weight="bold"), height=44, corner_radius=12)
+        self.yt_btn.grid(row=2, column=0, sticky="ew", padx=0, pady=(0, 18))
 
         # Status og progresjon
         self.status_var = ctk.StringVar(value="")
-        self.status_bar = ctk.CTkLabel(self.bg_frame, textvariable=self.status_var, anchor="w", height=28, font=ctk.CTkFont(size=13), text_color="#B0BEC5")
+        self.status_bar = ctk.CTkLabel(self.bg_frame, textvariable=self.status_var, anchor="w", height=32, font=ctk.CTkFont(size=14), text_color=Theme.color_theme.BTN_BLUE, fg_color=Theme.color_theme.MENU_COLOR, corner_radius=8)
         self.status_bar.grid(row=3, column=0, sticky="ew", padx=0, pady=(0, 0))
-        self.progress_bar = ctk.CTkProgressBar(self.bg_frame, variable=self.progress_var, width=420, height=18, progress_color="#FFD600")
-        self.progress_bar.grid(row=4, column=0, padx=0, pady=(8, 8))
+        self.progress_bar = ctk.CTkProgressBar(self.bg_frame, variable=self.progress_var, width=420, height=22, progress_color=Theme.color_theme.BTN_BLUE, corner_radius=8)
+        self.progress_bar.grid(row=4, column=0, padx=0, pady=(10, 10))
         self.progress_bar.set(0)
 
     def set_progress(self, value):
@@ -99,27 +100,65 @@ class YouTubeDownloaderApp(ctk.CTkFrame):
             return
         self.status_var.set(f"Laster ned {total} videoer fra spillelisten til '{playlist_title}'...")
         self.set_progress(0.1)
-        # Last ned hele spillelisten
-        cmd = [
-            "yt-dlp",
-            "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4",
-            "--merge-output-format", "mp4",
-            "--yes-playlist",
-            "-o", os.path.join(save_dir, "%(playlist_index)s - %(title)s.%(ext)s"),
-            url
-        ]
-        try:
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            self.set_progress(0.8)
-            if result.returncode == 0:
-                self.status_var.set(f"Ferdig: {total} videoer lastet ned til '{playlist_title}'.")
-                self.set_progress(1)
-            else:
-                self.status_var.set("Nedlasting av spilleliste feilet. Sjekk at yt-dlp og ffmpeg er installert.")
-                self.set_progress(0)
-        except Exception as e:
-            self.status_var.set(f"Feil under nedlasting: {e}")
-            self.set_progress(0)
+        # Last ned og legg til thumbnail for hver video
+        for idx, vid in enumerate(video_ids, 1):
+            self.status_var.set(f"Laster ned video {idx} av {total} ...")
+            self.set_progress(0.1 + 0.7 * idx / total)
+            # Last ned video
+            video_cmd = [
+                "yt-dlp",
+                "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4",
+                "--merge-output-format", "mp4",
+                "-o", os.path.join(save_dir, f"{idx:02d} - %(title)s.%(ext)s"),
+                f"https://www.youtube.com/watch?v={vid}"
+            ]
+            result = subprocess.run(video_cmd, capture_output=True, text=True)
+            # Finn filnavn
+            out_name = None
+            for line in result.stdout.splitlines():
+                if "Destination:" in line:
+                    out_name = line.split("Destination:",1)[-1].strip()
+            # Søk etter mp4-fil hvis ikke funnet
+            if not out_name:
+                files = [f for f in os.listdir(save_dir) if f.endswith(".mp4")]
+                files = sorted(files, key=lambda x: os.path.getmtime(os.path.join(save_dir, x)), reverse=True)
+                out_name = os.path.join(save_dir, files[0]) if files else None
+            # Last ned thumbnail
+            if out_name:
+                thumb_path = out_name.replace('.mp4', '.jpg')
+                thumb_cmd = [
+                    "yt-dlp",
+                    "--skip-download",
+                    "--write-thumbnail",
+                    "--convert-thumbnails", "jpg",
+                    "-o", out_name.replace('.mp4', ''),
+                    f"https://www.youtube.com/watch?v={vid}"
+                ]
+                thumb_result = subprocess.run(thumb_cmd, capture_output=True, text=True)
+                image_path = thumb_path if os.path.exists(thumb_path) else None
+                if image_path:
+                    temp_output = out_name + ".temp.mp4"
+                    ffmpeg_cmd = [
+                        "ffmpeg", "-y",
+                        "-i", out_name,
+                        "-i", image_path,
+                        "-map", "0",
+                        "-map", "1",
+                        "-c", "copy",
+                        "-metadata:s:t", "title=Thumbnail",
+                        "-metadata:s:t", "comment=Cover (front)",
+                        "-disposition:v:1", "attached_pic",
+                        temp_output
+                    ]
+                    ffmpeg_result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True)
+                    if ffmpeg_result.returncode == 0:
+                        try:
+                            os.remove(out_name)
+                            os.rename(temp_output, out_name)
+                        except Exception:
+                            pass
+        self.status_var.set(f"Ferdig: {total} videoer lastet ned til '{playlist_title}' med thumbnails.")
+        self.set_progress(1)
 
     def _download_worker(self, url):
         try:

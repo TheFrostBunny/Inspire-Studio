@@ -1,23 +1,30 @@
-# Video and Audio Merger App
+# Inspire Studio
 
-This app lets you select a video file and an audio file, merges them so the output video keeps the original video image but uses the selected audio, and exports the result. Built with Python, Tkinter (or PySimpleGUI), and ffmpeg.
+Inspire Studio er en moderne, brukervennlig app for Windows som lar deg:
 
-## Features
-- Select a video file (e.g., MP4)
-- Select an audio file (e.g., MP3, WAV)
-- Merge: Replace the video's audio with the selected audio, keeping the original video image
-- Export the merged video
+- **Slå sammen video og lyd**: Velg en videofil og en lydfil, og eksporter en ny video med ønsket lyd.
+- **Last ned fra YouTube**: Lim inn en YouTube-lenke eller spilleliste, og last ned videoer med automatisk thumbnail.
 
-## Requirements
-- Python 3.8+
-- ffmpeg (must be installed and available in PATH)
-- Tkinter (comes with standard Python) or PySimpleGUI
+Appen har et moderne grensesnitt bygget med Python, customtkinter og ffmpeg.
 
-## How to Use
-1. Run the app: `python app.py`
-2. Select your video and audio files
-3. Click merge/export
-4. The output video will have the original video image and the new audio
+## Funksjoner
+- Velg og slå sammen video (MP4, MOV, AVI, MKV) og lyd (MP3, WAV, AAC, OGG)
+- Legg til egendefinert thumbnail på eksportert video
+- Last ned enkeltvideoer eller hele spillelister fra YouTube
+- Automatisk innbygging av cover-bilde (thumbnail) på alle nedlastede videoer
+- Moderne, fargetema-basert UI
+
+## Krav
+- Python 3.8 eller nyere
+- ffmpeg (må være installert og i PATH)
+- customtkinter (`pip install customtkinter`)
+- yt-dlp (`pip install yt-dlp`)
+
+## Slik bruker du Inspire Studio
+1. Kjør appen: `python main.py`
+2. Velg "Video + Audio" for å slå sammen video og lyd, eller "YouTube" for å laste ned videoer
+3. Følg instruksjonene i appen
+4. Ferdig!
 
 ---
-This is a minimal demo. For production, add error handling and support for more formats as needed.
+Dette er et hobbyprosjekt. For produksjon, legg til mer feilhåndtering og støtte for flere formater etter behov.

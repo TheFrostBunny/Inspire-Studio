@@ -1,8 +1,8 @@
 # color_theme.py
 # Fargevariabler for hele appen
 
-BG_COLOR = "#f4f6fa"
-MENU_COLOR = "#e3eaf2"
+BG_COLOR = "#181A20"
+MENU_COLOR = "#23272e"
 BTN_GREEN = "#6ec177"
 BTN_GREEN_HOVER = "#4CAF50"
 BTN_BLUE = "#7db7e8"
