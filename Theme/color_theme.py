@@ -1,4 +1,3 @@
-# color_theme.py
 # Fargevariabler for hele appen
 
 BG_COLOR = "#181A20"
