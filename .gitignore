@@ -11,6 +11,9 @@ ENV/
 # VS Code settings
 .vscode/
 
+# github files
+.github/idea.md
+
 # OS files
 .DS_Store
 Thumbs.db
