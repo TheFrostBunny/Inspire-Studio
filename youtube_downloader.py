@@ -5,6 +5,7 @@ import os
 import threading
 import Theme.color_theme
 
+
 class YouTubeDownloaderApp(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
@@ -40,6 +41,11 @@ class YouTubeDownloaderApp(ctk.CTkFrame):
         self.progress_bar = ctk.CTkProgressBar(self.bg_frame, variable=self.progress_var, width=420, height=22, progress_color=Theme.color_theme.BTN_BLUE, corner_radius=8)
         self.progress_bar.grid(row=4, column=0, padx=0, pady=(10, 10))
         self.progress_bar.set(0)
+
+        # Statusliste for spilleliste
+        self.playlist_status_list = ctk.CTkTextbox(self.bg_frame, width=420, height=180, font=ctk.CTkFont(size=13), fg_color=Theme.color_theme.CONTENT_BG)
+        self.playlist_status_list.grid(row=5, column=0, sticky="ew", padx=0, pady=(0, 10))
+        self.playlist_status_list.configure(state="disabled")
 
     def set_progress(self, value):
         self.progress_var.set(value)
@@ -101,9 +107,13 @@ class YouTubeDownloaderApp(ctk.CTkFrame):
         self.status_var.set(f"Laster ned {total} videoer fra spillelisten til '{playlist_title}'...")
         self.set_progress(0.1)
         # Last ned og legg til thumbnail for hver video
+        self.playlist_status_list.configure(state="normal")
+        self.playlist_status_list.delete("0.0", "end")
         for idx, vid in enumerate(video_ids, 1):
-            self.status_var.set(f"Laster ned video {idx} av {total} ...")
+            status_line = f"Downloading video {idx} of {total}..."
+            self.status_var.set(status_line)
             self.set_progress(0.1 + 0.7 * idx / total)
+            self.playlist_status_list.insert("end", status_line + "\n")
             # Last ned video
             video_cmd = [
                 "yt-dlp",
@@ -157,7 +167,15 @@ class YouTubeDownloaderApp(ctk.CTkFrame):
                             os.rename(temp_output, out_name)
                         except Exception:
                             pass
+                        status_line = f"Video {idx}: thumbnail embedded."
+                    else:
+                        status_line = f"Video {idx}: downloaded, but thumbnail embedding failed."
+                else:
+                    status_line = f"Video {idx}: downloaded, but thumbnail not found."
+                self.playlist_status_list.insert("end", status_line + "\n")
         self.status_var.set(f"Ferdig: {total} videoer lastet ned til '{playlist_title}' med thumbnails.")
+        self.playlist_status_list.insert("end", f"Done: {total} videos downloaded to '{playlist_title}'.\n")
+        self.playlist_status_list.configure(state="disabled")
         self.set_progress(1)
 
     def _download_worker(self, url):

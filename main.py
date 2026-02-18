@@ -1,4 +1,7 @@
+import sys
+import os
 import customtkinter as ctk
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from video_audio_merger import VideoAudioMergerApp
 from youtube_downloader import YouTubeDownloaderApp
 import Theme.color_theme
@@ -32,6 +35,15 @@ class MainApp(ctk.CTk):
         # App-ikon (logo.ico)
         try:
             self.iconbitmap("logo.ico")
+            # Forsøk å sette taskbar-ikonet eksplisitt på Windows
+            import sys
+            if sys.platform == "win32":
+                import ctypes
+                hwnd = ctypes.windll.user32.GetParent(self.winfo_id())
+                icon_path = os.path.abspath("logo.ico")
+                if os.path.exists(icon_path):
+                    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(u"inspire.studio")
+                    ctypes.windll.user32.SendMessageW(hwnd, 0x80, 0, icon_path)
         except Exception:
             pass
 
